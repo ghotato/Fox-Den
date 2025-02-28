@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <title>FoxDen</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="titlebar">
+        <div class="titlebar-drag-region"></div>
+        <div class="window-controls">
+            <button class="window-control" id="minimize-btn" title="Minimize">
+                <svg width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="currentColor" d="M14 8v1H3V8h11z"/>
+                </svg>
+            </button>
+            <button class="window-control" id="maximize-btn" title="Maximize">
+                <svg width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="currentColor" d="M3 3v10h10V3H3zm9 9H4V4h8v8z"/>
+                </svg>
+            </button>
+            <button class="window-control" id="close-btn" title="Close">
+                <svg width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="currentColor" d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Include main scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/components/den.js"></script>
+    <script src="js/components/channel.js"></script>
+    <script src="js/components/chat.js"></script>
+    <script src="js/components/voice.js"></script>
+    <script src="js/components/user.js"></script>
+    <script src="js/components/settings.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Window controls implementation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const minimizeBtn = document.getElementById('minimize-btn');
+            const maximizeBtn = document.getElementById('maximize-btn');
+            const closeBtn = document.getElementById('close-btn');
+
+            if (minimizeBtn) {
+                minimizeBtn.addEventListener('click', () => {
+                    window.electronAPI.minimizeWindow();
+                });
+            }
+
+            if (maximizeBtn) {
+                maximizeBtn.addEventListener('click', () => {
+                    window.electronAPI.maximizeWindow();
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    window.electronAPI.closeWindow();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
