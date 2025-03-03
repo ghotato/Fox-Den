@@ -745,6 +745,17 @@ const SettingsManager = {
           </div>
           
           <button class="change-button" id="test-sound">Test Sound</button>
+          
+          <!-- Insert Voice Quality control here -->
+          <div class="quality-option">
+            <div>Voice Quality</div>
+            <input type="range" min="0" max="100" value="70" class="quality-slider" id="voice-quality">
+            <div class="quality-labels">
+              <span>Low</span>
+              <span>Standard</span>
+              <span>High</span>
+            </div>
+          </div>
         </div>
         
         <div class="settings-group">
@@ -772,21 +783,8 @@ const SettingsManager = {
               </div>
             </div>
           </div>
-        </div>
-        
-        <div class="settings-group">
-          <h4>Quality Settings</h4>
           
-          <div class="quality-option">
-            <div>Voice Quality</div>
-            <input type="range" min="0" max="100" value="70" class="quality-slider" id="voice-quality">
-            <div class="quality-labels">
-              <span>Low</span>
-              <span>Standard</span>
-              <span>High</span>
-            </div>
-          </div>
-          
+          <!-- Insert Video Quality control here -->
           <div class="quality-option">
             <div>Video Quality</div>
             <input type="range" min="0" max="100" value="70" class="quality-slider" id="video-quality">
@@ -801,6 +799,51 @@ const SettingsManager = {
     `;
     
     this.settingsContent.innerHTML = voiceHtml;
+
+    // Enumerate devices and populate select options
+    navigator.mediaDevices.enumerateDevices()
+      .then(devices => {
+        const audioInputs = devices.filter(d => d.kind === 'audioinput');
+        const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
+        const videoInputs = devices.filter(d => d.kind === 'videoinput');
+
+        // Populate microphone options
+        const micSelect = document.getElementById('mic-device');
+        if (micSelect) {
+          micSelect.innerHTML = '';
+          audioInputs.forEach(device => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.textContent = device.label || `Microphone ${micSelect.options.length + 1}`;
+            micSelect.appendChild(option);
+          });
+        }
+
+        // Populate speaker options
+        const speakerSelect = document.getElementById('speaker-device');
+        if (speakerSelect) {
+          speakerSelect.innerHTML = '';
+          audioOutputs.forEach(device => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.textContent = device.label || `Speaker ${speakerSelect.options.length + 1}`;
+            speakerSelect.appendChild(option);
+          });
+        }
+
+        // Populate camera options
+        const cameraSelect = document.getElementById('camera-device');
+        if (cameraSelect) {
+          cameraSelect.innerHTML = '';
+          videoInputs.forEach(device => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.textContent = device.label || `Camera ${cameraSelect.options.length + 1}`;
+            cameraSelect.appendChild(option);
+          });
+        }
+      })
+      .catch(err => console.error('Device enumeration error:', err));
     
     // Set up event listeners
     document.getElementById('test-sound').addEventListener('click', () => {
@@ -854,15 +897,30 @@ const SettingsManager = {
       }
     });
     
-    // Simulate microphone activity
+    // Replace simulated microphone activity with real audio input measurement
     const micLevel = document.getElementById('mic-level');
-    let micActivity = 0;
-    const updateMicLevel = () => {
-      micActivity = Math.max(0, Math.min(100, micActivity + (Math.random() * 30 - 15)));
-      micLevel.style.width = `${micActivity}%`;
-      this.micActivityInterval = requestAnimationFrame(updateMicLevel);
-    };
-    this.micActivityInterval = requestAnimationFrame(updateMicLevel);
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        const audioCtx = new AudioContext();
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        source.connect(analyser);
+        const updateMicLevel = () => {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          dataArray.forEach(value => { sum += value; });
+          const average = sum / dataArray.length;
+          micLevel.style.width = `${(average / 255) * 100}%`;
+          requestAnimationFrame(updateMicLevel);
+        };
+        updateMicLevel();
+      })
+      .catch(err => {
+        console.error('Error accessing microphone:', err);
+        micLevel.style.width = '0%';
+      });
     
     // Handle settings panel closure to clean up
     const cleanup = () => {

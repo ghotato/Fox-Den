@@ -39,12 +39,12 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'src/preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false
     },
-    icon: path.join(__dirname, 'src/assets/icons/png/64x64.png'),
+    icon: path.join(__dirname, 'src/assets/icons/png/FOX_64x64.png'),
     titleBarStyle: 'hidden',
     frame: false,
     backgroundColor: '#121212'
@@ -139,7 +139,7 @@ ipcMain.on('show-notification', (event, { title, body }) => {
   const notification = {
     title,
     body,
-    icon: path.join(__dirname, 'src/assets/icons/png/64x64.png')
+    icon: path.join(__dirname, 'src/assets/icons/png/FOX_64x64.png')
   };
   
   new Notification(notification).show();

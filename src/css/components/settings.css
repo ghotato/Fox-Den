@@ -1,16 +1,17 @@
 /* Settings Panel */
 .settings-panel {
   position: fixed;
-  top: 0;
+  top: 32px; /* adjusted from 55px */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 32px); /* updated height */
   background-color: var(--bg-primary);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
   transition: transform var(--transition-long) var(--ease-out);
+  margin-top: 0; /* changed from 48px to 0 so header sits right below the titlebar */
 }
 
 .settings-panel.active {
@@ -42,7 +43,7 @@
   position: absolute;
   left: 0;
   top: 60px;
-  padding: var(--spacing-md) 0;
+  /* padding: var(--spacing-md) 0; */
 }
 
 .settings-category {
@@ -211,7 +212,7 @@
   border-radius: var(--radius-sm);
   margin: var(--spacing-xs) 0;
   cursor: pointer;
-  transition: background-color var(--transition-short) var(--ease-out);
+  transition: background-color var(--transition-short) var (--ease-out);
 }
 
 .disable-button:hover, .delete-button:hover {
@@ -447,7 +448,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md) 0;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var (--border-color);
 }
 
 .keybind-action {

@@ -71,11 +71,6 @@ const UserManager = {
       });
     });
     
-    // Handle modal backdrop click
-    this.userProfileModal.querySelector('.modal-backdrop').addEventListener('click', () => {
-      this.userProfileModal.classList.remove('active');
-    });
-    
     // Handle members sidebar
     this.membersSidebar.addEventListener('click', (e) => {
       const memberElement = e.target.closest('.member');
@@ -229,7 +224,7 @@ const UserManager = {
    * @private
    */
   _setCustomStatus: function() {
-    // Create a modal for custom status input
+    // Create a modal for custom status input without emoji selection
     const modalHtml = `
       <div class="modal active" id="custom-status-modal">
         <div class="modal-backdrop"></div>
@@ -243,14 +238,6 @@ const UserManager = {
               <label for="custom-status-text">Status Text</label>
               <input type="text" id="custom-status-text" maxlength="40" placeholder="What's on your mind?">
             </div>
-            <div class="input-group">
-              <label>Status Emoji</label>
-              <div class="emoji-selector">
-                <button class="emoji-button" id="emoji-selector-btn">
-                  <span id="selected-emoji">😊</span>
-                </button>
-              </div>
-            </div>
           </div>
           <div class="modal-actions">
             <button class="modal-button secondary" id="clear-status">Clear Status</button>
@@ -260,70 +247,39 @@ const UserManager = {
       </div>
     `;
     
-    // Add to document
+    // Add modal to document
     const modalContainer = document.createElement('div');
     modalContainer.innerHTML = modalHtml;
     document.body.appendChild(modalContainer.firstChild);
     
     const statusModal = document.getElementById('custom-status-modal');
     
-    // Get current custom status
+    // Get and set current custom status value if present
     const user = AppState.get('currentUser');
     if (user.customStatus) {
       document.getElementById('custom-status-text').value = user.customStatus;
     }
     
-    // Set up event listeners
+    // Set up event listeners for modal controls
     statusModal.querySelector('.modal-close').addEventListener('click', () => {
       statusModal.remove();
     });
     
     document.getElementById('clear-status').addEventListener('click', () => {
-      // Clear custom status
       const user = { ...AppState.get('currentUser') };
       user.customStatus = '';
-      
       AppState.set('currentUser', user);
-      
-      // Show toast
       Utils.showToast('Custom status cleared', 'success');
-      
-      // Close modal
       statusModal.remove();
     });
     
     document.getElementById('save-status').addEventListener('click', () => {
       const statusText = document.getElementById('custom-status-text').value.trim();
-      const selectedEmoji = document.getElementById('selected-emoji').textContent;
-      
-      // Update custom status
       const user = { ...AppState.get('currentUser') };
-      user.customStatus = statusText ? `${selectedEmoji} ${statusText}` : '';
-      
+      user.customStatus = statusText ? statusText : '';
       AppState.set('currentUser', user);
-      
-      // Show toast
       Utils.showToast('Custom status updated', 'success');
-      
-      // Close modal
       statusModal.remove();
-    });
-    
-    // Handle emoji selection
-    document.getElementById('emoji-selector-btn').addEventListener('click', (e) => {
-      const rect = e.target.getBoundingClientRect();
-      
-      // Temporary simple emoji picker
-      const commonEmojis = ['😊', '😂', '❤️', '👍', '🎮', '💻', '🎯', '🏠', '🍕', '🎵', '📚', '💤', '🦊'];
-      
-      const emojiItems = commonEmojis.map(emoji => ({
-        label: emoji,
-        onClick: () => {
-          document.getElementById('selected-emoji').textContent = emoji;
-        }
-      }));
-      
-      Utils.showContextMenu(emojiItems, rect.left, rect.bottom + 5);
     });
   },
   

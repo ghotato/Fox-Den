@@ -5,15 +5,34 @@
  */
 const WindowControls = {
   init() {
-    const minimizeBtn = document.getElementById('minimize-btn');
-    const maximizeBtn = document.getElementById('maximize-btn');
-    const closeBtn = document.getElementById('close-btn');
+    // Changed IDs to match HTML elements
+    const minimizeBtn = document.getElementById('minimize-button');
+    const maximizeBtn = document.getElementById('maximize-button');
+    const closeBtn = document.getElementById('close-button');
     if (!minimizeBtn || !maximizeBtn || !closeBtn) {
       return console.error('Window control buttons not found');
     }
-    minimizeBtn.addEventListener('click', () => window.electron.window.minimize());
-    maximizeBtn.addEventListener('click', () => window.electron.window.maximize());
-    closeBtn.addEventListener('click', () => window.electron.window.close());
+    minimizeBtn.addEventListener('click', () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.send('window-minimize');
+      } else {
+        console.error('electron.ipcRenderer not available');
+      }
+    });
+    maximizeBtn.addEventListener('click', () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.send('window-maximize');
+      } else {
+        console.error('electron.ipcRenderer not available');
+      }
+    });
+    closeBtn.addEventListener('click', () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.send('window-close');
+      } else {
+        console.error('electron.ipcRenderer not available');
+      }
+    });
   }
 };
 

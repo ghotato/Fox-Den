@@ -21,7 +21,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-md);
+  padding-left: 13px;
   -webkit-app-region: drag; /* Make the titlebar draggable */
   user-select: none;
 }
@@ -113,7 +113,7 @@ button.danger {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-sm);
   font-weight: var(--font-weight-medium);
-  transition: background-color var(--transition-short) var(--ease-out);
+  transition: background-color var(--transition-short) var (--ease-out);
 }
 
 button.danger:hover {
@@ -138,11 +138,11 @@ textarea::placeholder {
 
 /* Modals */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  bottom: 40px;
+  right: -35px;
+  width: 444px;
+  height: 333px;
   display: none;
   z-index: var(--z-index-modal);
 }
@@ -153,17 +153,18 @@ textarea::placeholder {
   justify-content: center;
 }
 
-.modal-backdrop {
+/* Remove the modal-backdrop styles */
+/* .modal-backdrop {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-}
+} */
 
 .modal-container {
-  position: relative;
+  position: absolute;
   background-color: var(--bg-secondary);
   border-radius: var(--radius-md);
   width: 80%;
@@ -193,4 +194,9 @@ textarea::placeholder {
 }
 
 .modal-close {
-  back
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}

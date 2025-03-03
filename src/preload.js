@@ -1,17 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Simple preload script without uuid dependency
-contextBridge.exposeInMainWorld('electronAPI', {
-    minimizeWindow: () => {
-        console.log('Debug: Minimize window triggered');
-        ipcRenderer.send('minimize-window');
-    },
-    maximizeWindow: () => {
-        console.log('Debug: Maximize/restore window triggered');
-        ipcRenderer.send('maximize-window');
-    },
-    closeWindow: () => {
-        console.log('Debug: Close window triggered');
-        ipcRenderer.send('close-window');
-    }
+contextBridge.exposeInMainWorld('electron', {
+  ipcRenderer: {
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
+    on: (channel, listener) => ipcRenderer.on(channel, listener)
+  }
 });

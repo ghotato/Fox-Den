@@ -29,7 +29,6 @@ const App = {
       ChannelManager.init();
       ChatManager.init();
       VoiceManager.init();
-      UserManager.init();
       SettingsManager.init();
       
       // Set up keyboard shortcuts
@@ -432,6 +431,9 @@ document.addEventListener('DOMContentLoaded', () => {
   App.init().catch(error => {
     console.error('Failed to initialize application:', error);
   });
+
+  // Initialize user functionality after DOM is ready
+  UserManager.init();
 });
 
 // Export for use in other modules
